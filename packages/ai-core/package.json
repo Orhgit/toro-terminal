@@ -1,0 +1,31 @@
+{
+  "name": "@repo/ai-core",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./extractor": "./src/extractor.ts",
+    "./vision": "./src/vision.ts",
+    "./copywriter": "./src/copywriter.ts",
+    "./orchestrator": "./src/orchestrator.ts",
+    "./director": "./src/director.ts",
+    "./matchmaker": "./src/matchmaker.ts",
+    "./scout": "./src/scout.ts",
+    "./swarm": "./src/swarm/engine.ts",
+    "./studio": "./src/studio/index.ts",
+    "./dispatcher": "./src/swarm/dispatcher.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "openai": "^4.86.2",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "typescript": "5.9.2"
+  }
+}

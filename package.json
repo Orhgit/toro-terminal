@@ -1,0 +1,24 @@
+{
+  "name": "toro-platform",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "sync-linear": "tsx scripts/sync-linear.ts",
+    "deploy": "git add . && git commit -m 'sync: auto-update from terminal' && git push && pnpm run sync-linear"
+  },
+  "devDependencies": {
+    "dotenv": "^16.5.0",
+    "prettier": "^3.7.4",
+    "tsx": "^4.19.4",
+    "turbo": "^2.8.20",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

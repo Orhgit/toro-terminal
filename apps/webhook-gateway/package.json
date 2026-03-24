@@ -1,0 +1,24 @@
+{
+  "name": "@repo/webhook-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "check-types": "tsc --noEmit",
+    "test:extractor": "tsx scripts/test-extractor.ts"
+  },
+  "dependencies": {
+    "@repo/ai-core": "workspace:*",
+    "@repo/database": "workspace:*",
+    "fastify": "^5.3.3",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4",
+    "typescript": "5.9.2"
+  }
+}
