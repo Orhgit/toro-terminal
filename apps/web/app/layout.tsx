@@ -12,15 +12,14 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Toro — טורו | Israeli Real Estate",
-  description: "Israel's fastest AI-driven real estate platform",
+  title: "מרכז הנכסים | Merkaz HaNechasim — Real Estate Portal",
+  description: "Israel's AI-powered real estate portal — Search, compare, and find your next home",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#0a0a0a",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({

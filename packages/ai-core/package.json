@@ -13,7 +13,9 @@
     "./scout": "./src/scout.ts",
     "./swarm": "./src/swarm/engine.ts",
     "./studio": "./src/studio/index.ts",
-    "./dispatcher": "./src/swarm/dispatcher.ts"
+    "./dispatcher": "./src/swarm/dispatcher.ts",
+    "./guardian": "./src/swarm/guardian.ts",
+    "./whatsapp": "./src/services/whatsapp.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit"

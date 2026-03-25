@@ -18,6 +18,7 @@ export type { LeadMatch, MatchResult, MatchInput } from "./matchmaker.js";
 export { scoutProperty } from "./scout.js";
 export type { ScoutResult } from "./scout.js";
 
+// Swarm engine
 export {
   runCritiqueLoop,
   critiquePropertyData,
@@ -33,6 +34,7 @@ export type {
   CritiqueLoopResult,
 } from "./swarm/engine.js";
 
+// Swarm dispatcher
 export {
   evaluateForDispatch,
   generateBriefings,
@@ -46,10 +48,38 @@ export type {
   QueueDecision,
 } from "./swarm/dispatcher.js";
 
+// Swarm guardian
+export { runGuardianReview } from "./swarm/guardian.js";
+export type {
+  GuardianCheck,
+  GuardianReport,
+} from "./swarm/guardian.js";
+
+// WhatsApp service
+export { sendServiceFirst, sendFullMarketingKit } from "./services/whatsapp.js";
+export type {
+  WhatsAppTemplateMessage,
+  WhatsAppFreeformMessage,
+  SendResult,
+} from "./services/whatsapp.js";
+
+// Orchestrator
 export { runPropertyPipeline } from "./orchestrator.js";
 export type { PipelineResult } from "./orchestrator.js";
 
-export { burnOverlay, burnOverlayBatch, packageForSocial } from "./studio/index.js";
+// Studio — overlay, social, brand, layout, QA
+export {
+  burnOverlay,
+  burnOverlayBatch,
+  packageForSocial,
+  detectBrand,
+  getBrand,
+  listBrands,
+  computeLayout,
+  runVisualQa,
+  exportAsset,
+  exportPropertyAssets,
+} from "./studio/index.js";
 export type {
   OverlayLayer,
   OverlaySpec,
@@ -59,4 +89,14 @@ export type {
   VisualStyle,
   SceneDesign,
   SocialPackage,
+  BrandProfile,
+  Rect,
+  LayoutElement,
+  ImageLayout,
+  QaVerdict,
+  QaCheck,
+  QaReport,
+  ExportTarget,
+  ExportResult,
+  BatchExportResult,
 } from "./studio/index.js";

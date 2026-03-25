@@ -51,6 +51,39 @@ export interface VisualQaResult {
   scrimApplied: boolean;
 }
 
+export interface PointOfInterest {
+  name: string;
+  type: "school" | "park" | "shopping" | "transit" | "restaurant" | "gym" | "medical";
+  distance: string;
+  walkMinutes: number;
+}
+
+export interface NeighborhoodData {
+  vibe: string;
+  walkScore: number;
+  avgPricePerSqm: number;
+  pois: PointOfInterest[];
+  lat: number;
+  lng: number;
+}
+
+export interface PropertySpecs {
+  bedrooms: number;
+  bathrooms: number;
+  floor: string;
+  parking: string | null;
+  elevator: boolean;
+  balconySqm: number | null;
+  storage: boolean;
+  renovation: string | null;
+  yearBuilt: number | null;
+}
+
+export interface SmartInsight {
+  icon: "sparkle" | "trending" | "ruler" | "sun" | "shield";
+  text: string;
+}
+
 export interface DashboardProperty {
   property: Property;
   address: string;
@@ -73,6 +106,9 @@ export interface DashboardProperty {
   huntedAt: string | null;
   linearIssueId: string | null;
   linearIssueUrl: string | null;
+  specs: PropertySpecs;
+  neighborhood: NeighborhoodData | null;
+  smartInsights: SmartInsight[];
 }
 
 // ============================================================
@@ -204,6 +240,36 @@ export const PROPERTIES: DashboardProperty[] = [
     huntedAt: "2026-03-20T09:42:00.000Z",
     linearIssueId: "TORO-42",
     linearIssueUrl: "https://linear.app/toro/issue/TORO-42",
+    specs: {
+      bedrooms: 4,
+      bathrooms: 2,
+      floor: "קרקע",
+      parking: "חניה כפולה",
+      elevator: false,
+      balconySqm: null,
+      storage: true,
+      renovation: "שיפוץ מלא 2024",
+      yearBuilt: 1998,
+    },
+    neighborhood: {
+      vibe: "שכונת המשתלה היא אחת הפנינים של צפון תל אביב — רחובות שקטים עם עצי פיקוס ותיקים, קרבה מושלמת לפארק הירקון, ואווירה משפחתית-בוהמיינית ייחודית. בתי קפה בוטיק, גני ילדים מצוינים, ותחושה של קהילה שלא מוצאים בשכונות חדשות.",
+      walkScore: 92,
+      avgPricePerSqm: 32_000,
+      pois: [
+        { name: "בית ספר ויצמן", type: "school", distance: "350m", walkMinutes: 4 },
+        { name: "פארק הירקון", type: "park", distance: "500m", walkMinutes: 6 },
+        { name: "רמת אביב מול", type: "shopping", distance: "1.2km", walkMinutes: 15 },
+        { name: 'תחנת רכבת ת"א אוניברסיטה', type: "transit", distance: "800m", walkMinutes: 10 },
+        { name: "מכבי שירותי בריאות", type: "medical", distance: "400m", walkMinutes: 5 },
+      ],
+      lat: 32.1007,
+      lng: 34.7896,
+    },
+    smartInsights: [
+      { icon: "ruler", text: "גינה פרטית של 80 מ״ר — גדולה ב-60% מהממוצע באזור" },
+      { icon: "trending", text: "מחירי שכונת המשתלה עלו ב-12% ב-12 החודשים האחרונים" },
+      { icon: "sun", text: "כיוון דרום-מערב — שמש אחר הצהריים לתוך הגינה" },
+    ],
   },
   {
     property: {
@@ -286,6 +352,36 @@ export const PROPERTIES: DashboardProperty[] = [
     huntedAt: "2026-03-18T13:15:00.000Z",
     linearIssueId: "TORO-38",
     linearIssueUrl: "https://linear.app/toro/issue/TORO-38",
+    specs: {
+      bedrooms: 5,
+      bathrooms: 3,
+      floor: "16/18",
+      parking: "חניה כפולה תת-קרקעית",
+      elevator: true,
+      balconySqm: 60,
+      storage: true,
+      renovation: "חדש מקבלן",
+      yearBuilt: 2025,
+    },
+    neighborhood: {
+      vibe: "שדרות ניצה הן הכתובת היוקרתית של נתניה — טיילת ים שמשופצת, מגדלי יוקרה חדשים, ומסעדות שף. האווירה היא של ריביירה ישראלית — רגוע אבל מלוטש. קו חוף מהיפים בארץ, קרבה לכבישי הגישה למרכז, ומחירים שעדיין נמוכים מתל אביב ב-35%.",
+      walkScore: 78,
+      avgPricePerSqm: 42_000,
+      pois: [
+        { name: "בית ספר ליאו בק", type: "school", distance: "600m", walkMinutes: 8 },
+        { name: "טיילת ניצה", type: "park", distance: "100m", walkMinutes: 2 },
+        { name: "פולג מרכז מסחרי", type: "shopping", distance: "2.5km", walkMinutes: 8 },
+        { name: "תחנת רכבת נתניה", type: "transit", distance: "3km", walkMinutes: 10 },
+        { name: "מסעדת הלנה", type: "restaurant", distance: "200m", walkMinutes: 3 },
+      ],
+      lat: 32.3215,
+      lng: 34.8512,
+    },
+    smartInsights: [
+      { icon: "sparkle", text: "מעלית פרטית ישירות לדירה — פרימיום נדיר בנתניה" },
+      { icon: "ruler", text: "מרפסת 60 מ״ר — כמעט כמו דירה נוספת" },
+      { icon: "trending", text: "שדרות ניצה: עליית מחירים של 18% ב-2025" },
+    ],
   },
   {
     property: {
@@ -366,6 +462,36 @@ export const PROPERTIES: DashboardProperty[] = [
     huntedAt: "2026-03-22T07:30:00.000Z",
     linearIssueId: "TORO-45",
     linearIssueUrl: "https://linear.app/toro/issue/TORO-45",
+    specs: {
+      bedrooms: 3,
+      bathrooms: 1,
+      floor: "3/7",
+      parking: "חניה מקורה",
+      elevator: true,
+      balconySqm: 12,
+      storage: true,
+      renovation: "עיצוב אדריכלי 2023",
+      yearBuilt: 2019,
+    },
+    neighborhood: {
+      vibe: "הרצליה פיתוח היא המרכז העסקי-טכנולוגי של ישראל — חברות הייטק, שגרירויות, והחוף הכי יפה של השרון. אווירה קוסמופוליטית עם מסעדות מעולות, פארק הרצליה הענק, וגישה ישירה לכביש 2 ול-RTL. דירה כאן היא גם בית וגם השקעה.",
+      walkScore: 71,
+      avgPricePerSqm: 28_000,
+      pois: [
+        { name: "אריאנה בית ספר בינלאומי", type: "school", distance: "700m", walkMinutes: 9 },
+        { name: "חוף אכדיה", type: "park", distance: "550m", walkMinutes: 7 },
+        { name: "ארנה מול הרצליה", type: "shopping", distance: "1.5km", walkMinutes: 18 },
+        { name: "הולמס פלייס הרצליה", type: "gym", distance: "400m", walkMinutes: 5 },
+        { name: 'ביה"ח הרצליה מדיקל סנטר', type: "medical", distance: "1km", walkMinutes: 12 },
+      ],
+      lat: 32.1624,
+      lng: 34.7975,
+    },
+    smartInsights: [
+      { icon: "trending", text: "תשואה 4.2% — גבוהה ב-40% מהממוצע בהרצליה פיתוח" },
+      { icon: "sun", text: "נוף חלקי לים מהמרפסת — קומה מוצלחת לזה" },
+      { icon: "shield", text: "בניין חדש (2019) — ללא הפתעות תחזוקה" },
+    ],
   },
   {
     property: {
@@ -407,6 +533,19 @@ export const PROPERTIES: DashboardProperty[] = [
     huntedAt: "2026-03-23T16:30:00.000Z",
     linearIssueId: null,
     linearIssueUrl: null,
+    specs: {
+      bedrooms: 4,
+      bathrooms: 2,
+      floor: "9/12",
+      parking: "חניה אחת",
+      elevator: true,
+      balconySqm: 14,
+      storage: false,
+      renovation: null,
+      yearBuilt: null,
+    },
+    neighborhood: null,
+    smartInsights: [],
   },
   {
     property: {
@@ -498,5 +637,35 @@ export const PROPERTIES: DashboardProperty[] = [
     huntedAt: "2026-03-21T11:00:00.000Z",
     linearIssueId: "TORO-41",
     linearIssueUrl: "https://linear.app/toro/issue/TORO-41",
+    specs: {
+      bedrooms: 4,
+      bathrooms: 2,
+      floor: "5/9",
+      parking: "חניה בחניון",
+      elevator: true,
+      balconySqm: 14,
+      storage: true,
+      renovation: "שיפוץ מלא 2023",
+      yearBuilt: 2005,
+    },
+    neighborhood: {
+      vibe: "רחוב רוטשילד בראשון לציון הוא ציר מרכזי שחווה התחדשות — מרכז העיר החדש עם הרכבת הקלה, מתחמי בילוי, ותוכניות פינוי-בינוי. אווירה אורבנית צעירה עם גישה מצוינת לתחבורה ציבורית. שכונה שמשתנה מהר — מה שעולה פה היום שווה יותר מחר.",
+      walkScore: 88,
+      avgPricePerSqm: 22_000,
+      pois: [
+        { name: "בית ספר אהוד מנור", type: "school", distance: "300m", walkMinutes: 4 },
+        { name: "פארק ראשון לציון", type: "park", distance: "700m", walkMinutes: 9 },
+        { name: "רוטשילד סנטר", type: "shopping", distance: "200m", walkMinutes: 3 },
+        { name: "תחנת רכבת קלה רוטשילד", type: "transit", distance: "150m", walkMinutes: 2 },
+        { name: "סופר-פארם", type: "medical", distance: "100m", walkMinutes: 1 },
+      ],
+      lat: 31.9641,
+      lng: 34.8013,
+    },
+    smartInsights: [
+      { icon: "trending", text: "מחיר למ״ר נמוך ב-15% מהממוצע ברוטשילד — הזדמנות תמחור" },
+      { icon: "shield", text: "ממ״ד מרווח — דרישה חובה שמעלה את הערך" },
+      { icon: "sparkle", text: "2 דקות מהרכבת הקלה — גורם מכפיל ערך בעתיד" },
+    ],
   },
 ];
