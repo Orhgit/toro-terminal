@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* ── Premium Real Estate SaaS Design System ──────────────── */
+@theme {
+  --font-sans: "Inter", "Heebo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Core palette */
+  --color-bg: #09090b;
+  --color-bg-elevated: #18181b;
+  --color-bg-card: #1c1c21;
+  --color-bg-hover: #27272a;
+  --color-bg-input: #27272a;
+
+  /* Brand */
+  --color-brand: #6366f1;
+  --color-brand-hover: #818cf8;
+  --color-brand-muted: rgba(99, 102, 241, 0.15);
+
+  /* Accents */
+  --color-emerald: #34d399;
+  --color-amber: #fbbf24;
+  --color-rose: #fb7185;
+  --color-sky: #38bdf8;
+
+  /* Text */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-ring: rgba(99, 102, 241, 0.4);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+html, body {
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Glass morphism ───────────────────────────────────────── */
+.glass {
+  background: rgba(28, 28, 33, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--color-border);
+}
+
+.glass-subtle {
+  background: rgba(28, 28, 33, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.15); }
+}
+
+@keyframes reel-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes meta-safe-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
+  50% { box-shadow: 0 0 12px 3px rgba(52, 211, 153, 0.15); }
+}
+
+@keyframes terminal-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes scan-down {
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2.5s ease-in-out infinite;
+}
+
+.animate-meta-safe {
+  animation: meta-safe-pulse 2s ease-in-out infinite;
+}
+
+.terminal-cursor::after {
+  content: "█";
+  animation: terminal-blink 1s step-end infinite;
+  color: #34d399;
+}
+
+.terminal-line {
+  animation: scan-down 0.25s ease-out both;
+}
+
+/* ── Glass price tag ──────────────────────────────────────── */
+.glass-price {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── Terminal overlay ─────────────────────────────────────── */
+.terminal-bg {
+  background: rgba(9, 9, 11, 0.92);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+}
+
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* ── Component utilities ──────────────────────────────────── */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--color-brand);
+  color: white;
+  transition: background 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--color-brand-hover);
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  transition: all 0.15s;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+}
+
+/* ── Score ring ───────────────────────────────────────────── */
+.score-ring {
+  --size: 48px;
+  --stroke: 4px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ── Image carousel ───────────────────────────────────────── */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar { display: none; }
+
+.carousel > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
