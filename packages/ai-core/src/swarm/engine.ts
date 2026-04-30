@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import type { PropertyInsert } from "@repo/database/schema";
+import type { PropertyDraft } from "@repo/database/schema";
 import type { MarketingCopy } from "../copywriter.js";
 import type { ReelScript } from "../director.js";
 import { isMockMode } from "../mock.js";
@@ -55,7 +55,7 @@ If everything looks good, verdict = "approved".
 If any issue found, verdict = "revision_needed" with specific feedback for the Extractor to fix.`;
 
 export async function critiquePropertyData(
-  property: PropertyInsert
+  property: PropertyDraft
 ): Promise<CritiqueResult> {
   if (isMockMode()) {
     // Mock: DataArchitect approves on first pass
@@ -141,7 +141,7 @@ export async function critiqueCreativeOutput(
 export async function reviseCopy(
   original: MarketingCopy,
   feedback: string,
-  propertyData: PropertyInsert,
+  propertyData: PropertyDraft,
   visionTags: string[]
 ): Promise<MarketingCopy> {
   if (isMockMode()) {

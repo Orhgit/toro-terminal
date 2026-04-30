@@ -5,6 +5,27 @@ import { whatsappRoutes } from "./routes/whatsapp.js";
 
 const server = Fastify({ logger: true });
 
+// Capture raw request body alongside the parsed JSON so HMAC verification
+// can hash the exact bytes Meta signed. Without this, JSON.stringify of the
+// parsed body would differ from the wire bytes and verification would fail.
+server.addContentTypeParser(
+  "application/json",
+  { parseAs: "buffer" },
+  (req, body, done) => {
+    (req as { rawBody?: Buffer }).rawBody = body as Buffer;
+    if ((body as Buffer).length === 0) {
+      done(null, {});
+      return;
+    }
+    try {
+      const json = JSON.parse((body as Buffer).toString("utf8"));
+      done(null, json);
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  },
+);
+
 server.register(linearRoutes, { prefix: "/webhooks" });
 server.register(whatsappRoutes, { prefix: "/webhooks" });
 

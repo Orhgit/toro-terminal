@@ -1,4 +1,4 @@
-import type { PropertyInsert, Lead } from "@repo/database/schema";
+import type { PropertyDraft, Lead } from "@repo/database/schema";
 import { extractPropertyDetails } from "./extractor.js";
 import { analyzePropertyImages, type VisionAnalysis } from "./vision.js";
 import { generateMarketingCopy, type MarketingCopy } from "./copywriter.js";
@@ -20,7 +20,7 @@ import { isMockMode } from "./mock.js";
 // ============================================================
 
 export interface PipelineResult {
-  property: PropertyInsert;
+  property: PropertyDraft;
   vision: VisionAnalysis | null;
   copy: MarketingCopy;
   reel: ReelScript;

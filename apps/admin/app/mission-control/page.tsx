@@ -23,7 +23,6 @@ import {
   Bot,
   Camera,
   Type,
-  Music,
   Cpu,
   Loader2,
   Check,
@@ -34,7 +33,6 @@ import {
   ScanEye,
   LayoutGrid,
   Upload,
-  CircleDot,
 } from "lucide-react";
 import {
   MOCK_DASHBOARD_PROPERTIES,
@@ -262,6 +260,7 @@ function WorkflowPipeline({ workflow }: { workflow: AssetWorkflow }) {
     <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4 shadow-sm hover:shadow-md transition-all">
       <div className="flex items-start gap-3 mb-3">
         {/* Thumbnail */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
         <img
           src={workflow.imageUrl}
           alt={workflow.address}
@@ -284,7 +283,6 @@ function WorkflowPipeline({ workflow }: { workflow: AssetWorkflow }) {
           const StageIcon = stage.icon;
           const isComplete = i < currentIdx;
           const isCurrent = i === currentIdx;
-          const isPending = i > currentIdx;
 
           return (
             <div key={stage.id} className="flex items-center gap-1 flex-1">
@@ -392,7 +390,6 @@ interface TelemetryEvent {
   status: "running" | "done" | "queued";
 }
 
-const AGENT_NAMES = ["Extractor", "Vision", "Copywriter", "Director", "Matchmaker", "Critic"] as const;
 const AGENT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Extractor: Zap,
   Vision: Eye,
@@ -566,6 +563,7 @@ function PriorityCard({ data }: { data: DashboardProperty }) {
       <div className="flex items-start gap-3">
         {/* Thumbnail */}
         {data.imageUrls[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
           <img
             src={data.imageUrls[0]}
             alt={data.address}
@@ -649,6 +647,7 @@ function SocialCard({
       <div className="relative mb-3">
         {data.imageUrls[0] ? (
           <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+            {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
             <img
               src={data.imageUrls[0]}
               alt={data.address}

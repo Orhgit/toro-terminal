@@ -18,7 +18,7 @@ interface VideoPreviewProps {
   imageUrl?: string;
 }
 
-export function VideoPreview({ reelScript, propertyId, imageUrl }: VideoPreviewProps) {
+export function VideoPreview({ reelScript, propertyId: _propertyId, imageUrl }: VideoPreviewProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeScene, setActiveScene] = useState(0);
 
@@ -74,6 +74,7 @@ export function VideoPreview({ reelScript, propertyId, imageUrl }: VideoPreviewP
       <div className="relative aspect-[9/16] max-h-[360px] bg-zinc-900 overflow-hidden">
         {/* Background image */}
         {imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
           <img
             src={imageUrl}
             alt=""

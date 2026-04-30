@@ -9,7 +9,6 @@ import {
   Users,
   Sparkles,
   X,
-  ExternalLink,
 } from "lucide-react";
 import type { DashboardProperty, LeadMatchDisplay } from "../data/mock";
 import { MOCK_LEADS } from "../data/mock-leads";
@@ -55,6 +54,8 @@ const MOCK_SCOUT_RESULTS: Record<string, DashboardProperty> = {
       status: "active",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      organization_id: "00000000-0000-0000-0000-000000000001",
+      created_by: null,
     },
     address: "רחוב סוקולוב 42, מרכז העיר",
     city: "רמת גן",
@@ -103,6 +104,8 @@ const MOCK_SCOUT_RESULTS: Record<string, DashboardProperty> = {
       status: "active",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      organization_id: "00000000-0000-0000-0000-000000000001",
+      created_by: null,
     },
     address: "רחוב הפלמ״ח 18",
     city: "כפר סבא",
@@ -150,6 +153,8 @@ const MOCK_SCOUT_RESULTS: Record<string, DashboardProperty> = {
       status: "active",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      organization_id: "00000000-0000-0000-0000-000000000001",
+      created_by: null,
     },
     address: "שדרות הנשיא 88, פרויקט חדש",
     city: "חולון",

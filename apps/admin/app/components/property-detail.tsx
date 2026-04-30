@@ -6,7 +6,7 @@ import {
   Film, Music, Camera, Type, Palette, Heart, Zap,
   Users, MessageCircle, TrendingUp,
 } from "lucide-react";
-import { type DashboardProperty, type LeadMatchDisplay, STATUS_CONFIG } from "../data/mock";
+import { type DashboardProperty, STATUS_CONFIG } from "../data/mock";
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat("he-IL", {

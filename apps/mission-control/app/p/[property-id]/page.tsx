@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   MapPin,
@@ -14,7 +15,6 @@ import {
   Ruler,
   Sun,
   Shield,
-  ArrowLeft,
   GraduationCap,
   Trees,
   ShoppingBag,
@@ -69,6 +69,7 @@ export default async function PropertyLandingPage({ params }: PageProps) {
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="relative h-[75vh] min-h-[550px] overflow-hidden">
         {heroImage ? (
+          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
           <img
             src={heroImage}
             alt={data.address}
@@ -81,13 +82,13 @@ export default async function PropertyLandingPage({ params }: PageProps) {
 
         {/* Top bar */}
         <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-6 md:px-10 py-5">
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
             Back
-          </a>
+          </Link>
           <div className="flex items-center gap-3">
             {data.guardian?.verdict === "safe" && (
               <span className="badge bg-emerald-500/15 text-emerald-400 backdrop-blur-sm">
@@ -234,6 +235,7 @@ export default async function PropertyLandingPage({ params }: PageProps) {
                         i === 0 && data.imageUrls.length > 2 ? "col-span-2 aspect-[21/9]" : "aspect-[4/3]"
                       }`}
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
                       <img
                         src={url}
                         alt={`${data.address} - ${i + 1}`}

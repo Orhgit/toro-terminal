@@ -23,11 +23,9 @@ import {
 import {
   MOCK_DASHBOARD_PROPERTIES,
   type DashboardProperty,
-  type ReelScene,
   type GeneratedAsset,
   type CardPreview,
   type VisualStylePreview,
-  STATUS_CONFIG,
 } from "../data/mock";
 
 // ============================================================
@@ -304,6 +302,7 @@ function AssetPreviewModal({
           {/* Hero image with overlay simulation */}
           <div className="relative aspect-[4/3]">
             {assets.length > 0 ? (
+              // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
               <img
                 src={property.imageUrls[0]}
                 alt={property.address}
@@ -468,6 +467,7 @@ function TaskCard({
         >
           <div className="relative aspect-[16/9]">
             {data.imageUrls[0] ? (
+              // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
               <img
                 src={data.imageUrls[0]}
                 alt={data.address}

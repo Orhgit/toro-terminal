@@ -58,6 +58,7 @@ export function PropertyCard({
       <div className="relative aspect-[16/9] bg-zinc-900 overflow-hidden">
         {hasImages ? (
           <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
             <img
               src={data.imageUrls[imgIndex]}
               alt={data.address}

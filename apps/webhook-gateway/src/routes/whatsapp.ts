@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { handleWhatsappMessage } from "../handlers/whatsapp.js";
+import { verifyMetaSignature } from "../lib/verify-meta-signature.js";
 
 interface WhatsappVerifyQuery {
   "hub.mode"?: string;
@@ -40,9 +41,32 @@ export async function whatsappRoutes(app: FastifyInstance): Promise<void> {
   );
 
   // Incoming messages — respond immediately, process async
-  app.post(
+  app.post<{ Body: WhatsappWebhookBody }>(
     "/whatsapp",
-    (request: FastifyRequest<{ Body: WhatsappWebhookBody }>, reply) => {
+    {
+      preHandler: async (request, reply) => {
+        const appSecret = process.env.WHATSAPP_APP_SECRET;
+        if (!appSecret) {
+          // Fail closed: refuse to accept events when no secret is configured.
+          // Otherwise an unconfigured instance would be wide open.
+          request.log.error("WHATSAPP_APP_SECRET is not set; rejecting POST");
+          return reply.status(503).send({ error: "Webhook not configured" });
+        }
+
+        const rawBody = (request as { rawBody?: Buffer }).rawBody;
+        const signature = request.headers["x-hub-signature-256"];
+        const sigStr = Array.isArray(signature) ? signature[0] : signature;
+
+        if (!rawBody || !verifyMetaSignature(rawBody, sigStr, appSecret)) {
+          request.log.warn(
+            { hasBody: Boolean(rawBody), hasSig: Boolean(sigStr) },
+            "Rejected WhatsApp webhook — invalid signature",
+          );
+          return reply.status(401).send({ error: "Invalid signature" });
+        }
+      },
+    },
+    (request, reply) => {
       const payload = request.body;
 
       // Respond immediately to satisfy Meta's <15 s timeout

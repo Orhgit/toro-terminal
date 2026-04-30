@@ -10,6 +10,8 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 4,
     specific_needs: "חייב מרפסת גדולה וחניה, מעדיף שכונה שקטה עם גינה לילדים",
     created_at: "2026-03-15T09:00:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
   {
     id: "lead-0001-0000-0000-000000000002",
@@ -20,6 +22,8 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 5,
     specific_needs: "פנטהאוז עם נוף לים, רמת גימור גבוהה, מעלית פרטית",
     created_at: "2026-03-16T11:30:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
   {
     id: "lead-0001-0000-0000-000000000003",
@@ -30,6 +34,8 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 3,
     specific_needs: "דירה מודרנית להשקעה, קרובה לים, תשואה גבוהה",
     created_at: "2026-03-17T14:00:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
   {
     id: "lead-0001-0000-0000-000000000004",
@@ -40,6 +46,8 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 4,
     specific_needs: "דירה משפחתית עם ממ״ד, קרובה לתחבורה ציבורית ולגנים",
     created_at: "2026-03-18T08:45:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
   {
     id: "lead-0001-0000-0000-000000000005",
@@ -50,6 +58,8 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 3,
     specific_needs: "דירת יוקרה מעוצבת, סגנון מודרני, קרוב לרוטשילד",
     created_at: "2026-03-19T16:20:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
   {
     id: "lead-0001-0000-0000-000000000006",
@@ -60,5 +70,7 @@ export const MOCK_LEADS: Lead[] = [
     min_rooms: 4,
     specific_needs: "דירה עם נוף לים בכרמל, חניה, מרפסת, מתאים לזוג צעיר",
     created_at: "2026-03-20T10:15:00.000Z",
+    organization_id: "00000000-0000-0000-0000-000000000001",
+    assigned_to: null,
   } satisfies Lead,
 ];
