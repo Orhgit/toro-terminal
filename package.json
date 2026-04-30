@@ -12,10 +12,14 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "sync-linear": "tsx scripts/sync-linear.ts",
+    "seed:user": "tsx scripts/seed-user.ts",
     "predeploy": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
     "deploy": "git status --porcelain && echo '↑ inspect changes, then run: git push' && exit 1"
   },
   "devDependencies": {
+    "@repo/database": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.5.0",
     "prettier": "^3.7.4",
     "tsx": "^4.19.4",

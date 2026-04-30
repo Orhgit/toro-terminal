@@ -8,6 +8,15 @@ importers:
 
   .:
     devDependencies:
+      '@repo/database':
+        specifier: workspace:*
+        version: link:packages/database
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
