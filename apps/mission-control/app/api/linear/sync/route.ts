@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 // ============================================================
 // Linear Sync — Move card in UI ↔ Move issue in Linear
@@ -6,12 +7,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 const LINEAR_API = "https://api.linear.app/graphql";
 
-interface SyncPayload {
-  propertyId: string;
-  issueId: string;
-  action: "move" | "update_status";
-  targetState: string;
-}
+const SyncBody = z.object({
+  propertyId: z.string().min(1).max(100),
+  issueId: z.string().min(1).max(100),
+  action: z.enum(["move", "update_status"]),
+  targetState: z.enum([
+    "ai_processing",
+    "awaiting_graphics",
+    "in_review",
+    "published",
+  ]),
+});
 
 // Map our marketing statuses to Linear workflow state names
 const STATUS_TO_LINEAR_STATE: Record<string, string> = {
@@ -21,7 +27,7 @@ const STATUS_TO_LINEAR_STATE: Record<string, string> = {
   published: "Done",
 };
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<Response> {
   const apiKey = process.env.LINEAR_API_KEY;
 
   if (!apiKey) {
@@ -32,15 +38,29 @@ export async function POST(request: NextRequest) {
         mock: true,
         message: "Mock mode: card moved locally but Linear not synced",
       },
-      { status: 200 }
+      { status: 200 },
     );
   }
 
-  const body = (await request.json()) as SyncPayload;
+  let raw: unknown;
+  try {
+    raw = await request.json();
+  } catch {
+    return NextResponse.json({ success: false, error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const parsed = SyncBody.safeParse(raw);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { success: false, error: "Invalid input", details: parsed.error.flatten() },
+      { status: 400 },
+    );
+  }
+
+  const body = parsed.data;
   const linearState = STATUS_TO_LINEAR_STATE[body.targetState] ?? "In Progress";
 
   try {
-    // Step 1: Find the workflow state ID for the target state
     const teamId = process.env.LINEAR_TEAM_ID;
 
     const stateQuery = `
@@ -68,17 +88,16 @@ export async function POST(request: NextRequest) {
     };
 
     const targetNode = stateData.data?.workflowStates?.nodes.find(
-      (n) => n.name === linearState
+      (n) => n.name === linearState,
     );
 
     if (!targetNode) {
       return NextResponse.json(
         { success: false, error: `Linear state "${linearState}" not found` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // Step 2: Update the issue's state
     const updateMutation = `
       mutation UpdateIssue($issueId: String!, $stateId: String!) {
         issueUpdate(id: $issueId, input: { stateId: $stateId }) {
@@ -101,7 +120,12 @@ export async function POST(request: NextRequest) {
     });
 
     const updateData = (await updateRes.json()) as {
-      data?: { issueUpdate?: { success: boolean; issue?: { identifier: string; state?: { name: string } } } };
+      data?: {
+        issueUpdate?: {
+          success: boolean;
+          issue?: { identifier: string; state?: { name: string } };
+        };
+      };
     };
 
     const issue = updateData.data?.issueUpdate;
@@ -112,12 +136,13 @@ export async function POST(request: NextRequest) {
       newState: issue?.issue?.state?.name,
     });
   } catch (err) {
+    // Never echo `apiKey` or other secrets back to the client.
     return NextResponse.json(
       {
         success: false,
         error: err instanceof Error ? err.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
