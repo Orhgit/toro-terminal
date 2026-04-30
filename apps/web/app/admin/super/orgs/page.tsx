@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   Power,
-  Calendar,
   TrendingUp,
   AlertTriangle,
   Sparkles,

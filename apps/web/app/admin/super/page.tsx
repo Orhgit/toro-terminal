@@ -14,13 +14,9 @@ import {
   Search,
   MoreHorizontal,
   TrendingUp,
-  Eye,
   AlertTriangle,
-  Crown,
-  ChevronDown,
   Power,
   Edit,
-  Trash2,
   Sparkles,
 } from "lucide-react";
 
