@@ -5,6 +5,12 @@ import { Sidebar } from "./components/sidebar";
 export const metadata: Metadata = {
   title: "Toro Mission Control",
   description: "AI-powered real estate command center — Toro Platform",
+  // Internal SaaS dashboard — never index.
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
 
 export default function RootLayout({

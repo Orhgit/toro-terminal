@@ -239,6 +239,8 @@ export default function LoginPage() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="ישראל ישראלי"
+                    required
+                    autoComplete="name"
                     className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pr-10 pl-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition"
                   />
                 </div>
@@ -291,6 +293,7 @@ export default function LoginPage() {
                   onChange={(e) => { setEmail(e.target.value); setError(""); }}
                   placeholder="agent@agency.co.il"
                   autoComplete="email"
+                  required
                   className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pr-10 pl-4 py-3.5 text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition"
                   dir="ltr"
                 />
@@ -306,8 +309,10 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                  placeholder="לפחות 6 תווים"
+                  placeholder="לפחות 8 תווים"
                   autoComplete={isSignUp ? "new-password" : "current-password"}
+                  required
+                  minLength={8}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pr-10 pl-12 py-3.5 text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition"
                 />
                 <button

@@ -5,6 +5,12 @@ import { Sidebar } from "./components/sidebar";
 export const metadata: Metadata = {
   title: "Toro Admin — Command Center",
   description: "Agency command center for Toro — Israel's fastest AI-driven real estate platform",
+  // Admin UI is internal — must never be indexed by search engines.
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
 
 export default function RootLayout({
