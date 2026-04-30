@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 import {
   Search,
   LayoutGrid,
@@ -12,9 +13,26 @@ import {
 import { LISTINGS, type Listing } from "../data/listings";
 import { PropertyCard, PropertyCardList } from "./property-card";
 import { FilterSidebar, DEFAULT_FILTERS, type Filters } from "./filter-sidebar";
-import { MapPanel } from "./map-panel";
 import { useListingStore } from "../lib/listing-context";
 import Link from "next/link";
+
+// Mapbox GL ships a ~600 KB client bundle. Splitting it out via dynamic()
+// keeps the initial JS for the home page small and avoids loading the SDK
+// on devices that never reach the map view (RIN-388).
+const MapPanel = dynamic(
+  () => import("./map-panel").then((m) => m.MapPanel),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        style={{ position: "absolute", inset: 0, borderRadius: 16 }}
+        className="bg-slate-100 animate-pulse"
+        aria-label="טוען מפה"
+        role="status"
+      />
+    ),
+  },
+);
 
 type SortKey = "newest" | "price_asc" | "price_desc";
 
