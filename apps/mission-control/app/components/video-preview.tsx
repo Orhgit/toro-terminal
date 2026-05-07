@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   Film,
   Play,
@@ -74,11 +75,12 @@ export function VideoPreview({ reelScript, propertyId: _propertyId, imageUrl }: 
       <div className="relative aspect-[9/16] max-h-[360px] bg-zinc-900 overflow-hidden">
         {/* Background image */}
         {imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
-          <img
+          <Image
             src={imageUrl}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover opacity-40"
           />
         )}
 

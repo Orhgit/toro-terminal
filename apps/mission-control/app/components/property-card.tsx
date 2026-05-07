@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   MapPin,
   Bed,
@@ -58,11 +59,12 @@ export function PropertyCard({
       <div className="relative aspect-[16/9] bg-zinc-900 overflow-hidden">
         {hasImages ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
-            <img
-              src={data.imageUrls[imgIndex]}
+            <Image
+              src={data.imageUrls[imgIndex] ?? ""}
               alt={data.address}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
             />
 
             {/* Navigation arrows */}

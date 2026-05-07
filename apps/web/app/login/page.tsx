@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -85,11 +86,14 @@ export default function LoginPage() {
       <div className="relative hidden lg:flex lg:w-[55%] overflow-hidden bg-indigo-950">
         {/* Background images with crossfade */}
         {HERO_IMAGES.map((src, i) => (
-          <img
+          <Image
             key={src}
             src={src}
             alt=""
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === heroIndex ? "opacity-100" : "opacity-0"}`}
+            fill
+            sizes="55vw"
+            priority={i === 0}
+            className={`absolute inset-0 object-cover transition-opacity duration-1000 ${i === heroIndex ? "opacity-100" : "opacity-0"}`}
           />
         ))}
         <div className="absolute inset-0 bg-gradient-to-l from-indigo-950/90 via-indigo-950/60 to-indigo-950/30" />
@@ -185,7 +189,7 @@ export default function LoginPage() {
           {/* Mobile hero */}
           <div className="lg:hidden mb-6">
             <div className="relative rounded-3xl overflow-hidden h-40 mb-6">
-              <img src={HERO_IMAGES[0]} alt="" className="w-full h-full object-cover" />
+              <Image src={HERO_IMAGES[0]!} alt="" fill sizes="100vw" className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/80 to-transparent" />
               <div className="absolute bottom-4 right-4 left-4">
                 <div className="flex items-center gap-2">

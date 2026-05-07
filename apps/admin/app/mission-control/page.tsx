@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import NextImage from "next/image";
 import {
   Building2,
   Megaphone,
@@ -260,10 +261,11 @@ function WorkflowPipeline({ workflow }: { workflow: AssetWorkflow }) {
     <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4 shadow-sm hover:shadow-md transition-all">
       <div className="flex items-start gap-3 mb-3">
         {/* Thumbnail */}
-        {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
-        <img
+        <NextImage
           src={workflow.imageUrl}
           alt={workflow.address}
+          width={48}
+          height={48}
           className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
         />
         <div className="min-w-0 flex-1">
@@ -563,10 +565,11 @@ function PriorityCard({ data }: { data: DashboardProperty }) {
       <div className="flex items-start gap-3">
         {/* Thumbnail */}
         {data.imageUrls[0] ? (
-          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
-          <img
+          <NextImage
             src={data.imageUrls[0]}
             alt={data.address}
+            width={64}
+            height={64}
             className="h-16 w-16 flex-shrink-0 rounded-lg object-cover"
           />
         ) : (
@@ -647,11 +650,12 @@ function SocialCard({
       <div className="relative mb-3">
         {data.imageUrls[0] ? (
           <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-            {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
-            <img
+            <NextImage
               src={data.imageUrls[0]}
               alt={data.address}
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             <span className={`absolute top-2 left-2 inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[9px] font-semibold backdrop-blur-sm ${brandConfig.bgColor} ${brandConfig.color} ${brandConfig.borderColor}`}>

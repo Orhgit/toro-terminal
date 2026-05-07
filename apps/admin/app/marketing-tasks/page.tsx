@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NextImage from "next/image";
 import {
   Film,
   Camera,
@@ -301,12 +302,13 @@ function AssetPreviewModal({
         >
           {/* Hero image with overlay simulation */}
           <div className="relative aspect-[4/3]">
-            {assets.length > 0 ? (
-              // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
-              <img
+            {assets.length > 0 && property.imageUrls[0] ? (
+              <NextImage
                 src={property.imageUrls[0]}
                 alt={property.address}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-slate-200">
@@ -467,11 +469,12 @@ function TaskCard({
         >
           <div className="relative aspect-[16/9]">
             {data.imageUrls[0] ? (
-              // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
-              <img
+              <NextImage
                 src={data.imageUrls[0]}
                 alt={data.address}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-slate-200">

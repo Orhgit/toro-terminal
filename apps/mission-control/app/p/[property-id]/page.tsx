@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -69,11 +70,13 @@ export default async function PropertyLandingPage({ params }: PageProps) {
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section className="relative h-[75vh] min-h-[550px] overflow-hidden">
         {heroImage ? (
-          // eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image
-          <img
+          <Image
             src={heroImage}
             alt={data.address}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-zinc-800" />
@@ -235,11 +238,12 @@ export default async function PropertyLandingPage({ params }: PageProps) {
                         i === 0 && data.imageUrls.length > 2 ? "col-span-2 aspect-[21/9]" : "aspect-[4/3]"
                       }`}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element -- TODO(RIN-410): migrate to next/image */}
-                      <img
+                      <Image
                         src={url}
                         alt={`${data.address} - ${i + 1}`}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover hover:scale-105 transition-transform duration-700"
                       />
                     </div>
                   ))}
