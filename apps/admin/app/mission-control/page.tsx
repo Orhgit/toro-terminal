@@ -27,6 +27,14 @@ import {
   Cpu,
   Loader2,
   Check,
+  ShieldCheck,
+  ShieldAlert,
+  ShieldX,
+  Workflow,
+  ScanEye,
+  LayoutGrid,
+  Upload,
+  CircleDot,
 } from "lucide-react";
 import {
   MOCK_DASHBOARD_PROPERTIES,
@@ -102,6 +110,36 @@ interface KanbanCard {
   column: KanbanColumn;
   assignee: string | null;
   brand: Brand;
+  complianceScore: number;
+}
+
+// ============================================================
+// Compliance Badge
+// ============================================================
+
+function ComplianceBadge({ score }: { score: number }) {
+  if (score >= 100) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-semibold text-emerald-700" title="Meta compliant — safe to dispatch">
+        <ShieldCheck className="h-3 w-3" />
+        {score}
+      </span>
+    );
+  }
+  if (score >= 70) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold text-amber-700" title="Minor compliance issues — review recommended">
+        <ShieldAlert className="h-3 w-3" />
+        {score}
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-red-50 border border-red-200 px-2 py-0.5 text-[10px] font-semibold text-red-700" title="Blocked — Guardian found critical issues">
+      <ShieldX className="h-3 w-3" />
+      {score}
+    </span>
+  );
 }
 
 function resolveColumn(p: DashboardProperty): KanbanColumn {
@@ -134,6 +172,212 @@ const COLUMN_CONFIG: Record<
     dotColor: "bg-emerald-500",
   },
 };
+
+// ============================================================
+// Live Workflow — per-asset Guardian & Visual QA status
+// ============================================================
+
+type PipelineStage = "layout" | "overlay" | "visual_qa" | "guardian" | "export" | "done";
+
+interface AssetWorkflow {
+  propertyId: string;
+  address: string;
+  imageUrl: string;
+  brand: Brand;
+  stage: PipelineStage;
+  guardianScore: number;
+  qaVerdict: "pass" | "warn" | "fail" | "pending";
+  qaChecks: { name: string; verdict: "pass" | "warn" | "fail" }[];
+  textCoveragePercent: number;
+  exported: boolean;
+}
+
+const PIPELINE_STAGES: { id: PipelineStage; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { id: "layout", label: "Layout", icon: LayoutGrid },
+  { id: "overlay", label: "Overlay", icon: Palette },
+  { id: "visual_qa", label: "Visual QA", icon: ScanEye },
+  { id: "guardian", label: "Guardian", icon: ShieldCheck },
+  { id: "export", label: "Export", icon: Upload },
+  { id: "done", label: "Done", icon: CheckCircle2 },
+];
+
+function buildMockWorkflows(): AssetWorkflow[] {
+  return MOCK_DASHBOARD_PROPERTIES
+    .filter((p) => p.imageUrls.length > 0 && p.reelScript && p.reelScript.length > 0)
+    .map((p) => {
+      const isPublished = p.marketingStatus === "published";
+      const isReview = p.marketingStatus === "in_review";
+      const hasAssets = p.generatedAssets && p.generatedAssets.length > 0;
+
+      let stage: PipelineStage = "layout";
+      let qaVerdict: AssetWorkflow["qaVerdict"] = "pending";
+      let guardianScore = 0;
+      let exported = false;
+
+      if (isPublished) {
+        stage = "done";
+        qaVerdict = "pass";
+        guardianScore = 100;
+        exported = true;
+      } else if (isReview && hasAssets) {
+        stage = "guardian";
+        qaVerdict = "warn";
+        guardianScore = 80;
+      } else if (hasAssets) {
+        stage = "export";
+        qaVerdict = "pass";
+        guardianScore = 100;
+      } else {
+        stage = "overlay";
+        qaVerdict = "pending";
+        guardianScore = 0;
+      }
+
+      return {
+        propertyId: p.property.id,
+        address: p.address,
+        imageUrl: p.imageUrls[0]!,
+        brand: getPropertyBrand(p.property.id),
+        stage,
+        guardianScore,
+        qaVerdict,
+        qaChecks: [
+          { name: "Text Contrast", verdict: qaVerdict === "pending" ? "pass" as const : qaVerdict },
+          { name: "Meta 20% Rule", verdict: isReview ? "warn" as const : "pass" as const },
+          { name: "Font Size", verdict: "pass" as const },
+          { name: "Element Overlap", verdict: "pass" as const },
+          { name: "Safe Zone", verdict: guardianScore < 70 ? "fail" as const : "pass" as const },
+        ],
+        textCoveragePercent: isReview ? 18.4 : isPublished ? 12.1 : 15.6,
+        exported,
+      };
+    });
+}
+
+function WorkflowPipeline({ workflow }: { workflow: AssetWorkflow }) {
+  const currentIdx = PIPELINE_STAGES.findIndex((s) => s.id === workflow.stage);
+  const brandConfig = BRANDS.find((b) => b.id === workflow.brand)!;
+
+  return (
+    <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4 shadow-sm hover:shadow-md transition-all">
+      <div className="flex items-start gap-3 mb-3">
+        {/* Thumbnail */}
+        <img
+          src={workflow.imageUrl}
+          alt={workflow.address}
+          className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
+        />
+        <div className="min-w-0 flex-1">
+          <h4 className="text-xs font-semibold text-gray-900 truncate">{workflow.address}</h4>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className={`inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[9px] font-semibold ${brandConfig.bgColor} ${brandConfig.color}`}>
+              {brandConfig.nameHe}
+            </span>
+            <ComplianceBadge score={workflow.guardianScore} />
+          </div>
+        </div>
+      </div>
+
+      {/* Pipeline stages */}
+      <div className="flex items-center gap-1 mb-3">
+        {PIPELINE_STAGES.map((stage, i) => {
+          const StageIcon = stage.icon;
+          const isComplete = i < currentIdx;
+          const isCurrent = i === currentIdx;
+          const isPending = i > currentIdx;
+
+          return (
+            <div key={stage.id} className="flex items-center gap-1 flex-1">
+              <div
+                className={`flex items-center justify-center rounded-full h-6 w-6 transition-all ${
+                  isComplete
+                    ? "bg-emerald-500 text-white"
+                    : isCurrent
+                      ? "bg-indigo-500 text-white ring-2 ring-indigo-200"
+                      : "bg-slate-100 text-slate-400"
+                }`}
+                title={stage.label}
+              >
+                {isComplete ? (
+                  <Check className="h-3 w-3" />
+                ) : isCurrent ? (
+                  <StageIcon className="h-3 w-3 animate-pulse" />
+                ) : (
+                  <StageIcon className="h-3 w-3" />
+                )}
+              </div>
+              {i < PIPELINE_STAGES.length - 1 && (
+                <div className={`flex-1 h-0.5 rounded-full ${isComplete ? "bg-emerald-300" : "bg-slate-200"}`} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* QA checks row */}
+      <div className="flex flex-wrap gap-1.5">
+        {workflow.qaChecks.map((check) => (
+          <span
+            key={check.name}
+            className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[9px] font-semibold border ${
+              check.verdict === "pass"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : check.verdict === "warn"
+                  ? "bg-amber-50 text-amber-700 border-amber-200"
+                  : "bg-red-50 text-red-700 border-red-200"
+            }`}
+          >
+            {check.verdict === "pass" ? (
+              <CheckCircle2 className="h-2.5 w-2.5" />
+            ) : check.verdict === "warn" ? (
+              <ShieldAlert className="h-2.5 w-2.5" />
+            ) : (
+              <ShieldX className="h-2.5 w-2.5" />
+            )}
+            {check.name}
+          </span>
+        ))}
+      </div>
+
+      {/* Text coverage bar */}
+      <div className="mt-2.5 flex items-center gap-2">
+        <span className="text-[10px] text-slate-400 whitespace-nowrap">Text: {workflow.textCoveragePercent}%</span>
+        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all ${
+              workflow.textCoveragePercent <= 15
+                ? "bg-emerald-400"
+                : workflow.textCoveragePercent <= 20
+                  ? "bg-amber-400"
+                  : "bg-red-400"
+            }`}
+            style={{ width: `${Math.min(workflow.textCoveragePercent / 25 * 100, 100)}%` }}
+          />
+        </div>
+        <span className="text-[10px] text-slate-400">20% max</span>
+      </div>
+
+      {/* Export status */}
+      <div className="mt-2 flex items-center gap-1.5">
+        {workflow.exported ? (
+          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600">
+            <Upload className="h-3 w-3" />
+            Exported to Supabase &ldquo;Ready to Post&rdquo;
+          </span>
+        ) : workflow.stage === "done" || workflow.stage === "export" ? (
+          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-600">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Exporting to Supabase...
+          </span>
+        ) : (
+          <span className="text-[10px] text-slate-400">
+            Awaiting pipeline completion
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ============================================================
 // Agent telemetry mock data
@@ -356,8 +600,9 @@ function PriorityCard({ data }: { data: DashboardProperty }) {
         </div>
       )}
 
-      {/* Quick stats */}
+      {/* Quick stats + compliance */}
       <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-400">
+        <ComplianceBadge score={100} />
         {data.reelScript && (
           <span className="flex items-center gap-1">
             <Film className="h-3 w-3" />
@@ -461,31 +706,40 @@ function SocialCard({
         </div>
       )}
 
-      {/* Assignee + Actions */}
+      {/* Compliance + Assignee + Actions */}
       <div className="flex items-center justify-between border-t border-(--color-border) pt-3">
-        {assignee ? (
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            {assignee}
-          </span>
-        ) : (
-          <button
-            onClick={onClaim}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 transition-all hover:bg-indigo-100 hover:shadow-sm"
-          >
-            <Hand className="h-3 w-3" />
-            I&apos;m on it
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <ComplianceBadge score={card.complianceScore} />
+          {assignee ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+              <CheckCircle2 className="h-3 w-3" />
+              {assignee}
+            </span>
+          ) : (
+            <button
+              onClick={onClaim}
+              className="inline-flex items-center gap-1 rounded-lg border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-medium text-indigo-700 transition-all hover:bg-indigo-100"
+            >
+              <Hand className="h-3 w-3" />
+              I&apos;m on it
+            </button>
+          )}
+        </div>
 
         {card.column !== "live" && (
-          <button
-            onClick={onAdvance}
-            className="inline-flex items-center gap-1 rounded-lg bg-(--color-brand) px-2.5 py-1.5 text-[11px] font-medium text-white transition-all hover:bg-(--color-brand-hover)"
-          >
-            <ArrowRight className="h-3 w-3" />
-            {card.column === "ready_to_design" ? "To Post" : "Go Live"}
-          </button>
+          card.complianceScore >= 100 ? (
+            <button
+              onClick={onAdvance}
+              className="inline-flex items-center gap-1 rounded-lg bg-(--color-brand) px-2.5 py-1.5 text-[11px] font-medium text-white transition-all hover:bg-(--color-brand-hover)"
+            >
+              <ArrowRight className="h-3 w-3" />
+              {card.column === "ready_to_design" ? "To Post" : "Go Live"}
+            </button>
+          ) : (
+            <span className="text-[10px] text-red-500 font-medium">
+              Guardian review needed
+            </span>
+          )
         )}
 
         {card.column === "live" && (
@@ -591,13 +845,19 @@ function AgentTelemetryWidget() {
 export default function MissionControlPage() {
   const [selectedBrand, setSelectedBrand] = useState<Brand>("all");
   const [cards, setCards] = useState<KanbanCard[]>(() =>
-    MOCK_DASHBOARD_PROPERTIES.filter((p) => p.reelScript && p.reelScript.length > 0).map((p) => ({
-      property: p,
-      column: resolveColumn(p),
-      assignee: p.marketingStatus === "published" ? "Sarah K." : null,
-      brand: getPropertyBrand(p.property.id),
-    })),
+    MOCK_DASHBOARD_PROPERTIES.filter((p) => p.reelScript && p.reelScript.length > 0).map((p) => {
+      // Mock compliance: published = 100, in_review = 80, others = 100
+      const score = p.marketingStatus === "in_review" ? 80 : 100;
+      return {
+        property: p,
+        column: resolveColumn(p),
+        assignee: p.marketingStatus === "published" ? "Sarah K." : null,
+        brand: getPropertyBrand(p.property.id),
+        complianceScore: score,
+      };
+    }),
   );
+  const [workflows] = useState<AssetWorkflow[]>(() => buildMockWorkflows());
 
   const filteredCards =
     selectedBrand === "all"
@@ -668,6 +928,31 @@ export default function MissionControlPage() {
               <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-400 mb-2" />
               <p className="text-sm font-medium text-slate-500">All caught up!</p>
               <p className="text-xs text-slate-400">No pending priorities for this brand.</p>
+            </div>
+          )}
+        </section>
+
+        {/* Live Workflow — Guardian & Visual QA per asset */}
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Workflow className="h-4.5 w-4.5 text-violet-500" />
+            <h2 className="text-base font-bold text-gray-900">Live Workflow</h2>
+            <span className="rounded-full bg-violet-50 border border-violet-200 px-2 py-0.5 text-[11px] font-semibold text-violet-700">
+              Guardian + Visual QA
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {workflows
+              .filter((w) => selectedBrand === "all" || w.brand === selectedBrand)
+              .map((w) => (
+                <WorkflowPipeline key={w.propertyId} workflow={w} />
+              ))}
+          </div>
+          {workflows.filter((w) => selectedBrand === "all" || w.brand === selectedBrand).length === 0 && (
+            <div className="rounded-xl border border-dashed border-(--color-border) bg-(--color-surface-alt) p-8 text-center">
+              <ScanEye className="mx-auto h-8 w-8 text-slate-300 mb-2" />
+              <p className="text-sm font-medium text-slate-500">No assets in pipeline</p>
+              <p className="text-xs text-slate-400">Process properties to see QA status here.</p>
             </div>
           )}
         </section>

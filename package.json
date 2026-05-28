@@ -1,6 +1,9 @@
 {
   "name": "toro-platform",
   "private": true,
+  "bin": {
+    "toro": "./bin/toro.sh"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
