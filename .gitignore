@@ -5,12 +5,6 @@ node_modules
 .pnp
 .pnp.js
 
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Testing
 coverage
@@ -36,3 +30,12 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Local environment files. The repo encrypts apps/**/.env via git-crypt
+# (see .gitattributes), but defence-in-depth: ignore by default so a fresh
+# clone without git-crypt configured cannot accidentally commit plaintext.
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local

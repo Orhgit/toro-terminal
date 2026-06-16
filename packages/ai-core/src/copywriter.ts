@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import type { PropertyInsert } from "@repo/database/schema";
+import type { PropertyDraft } from "@repo/database/schema";
 import { isMockMode } from "./mock.js";
 
 // ============================================================
@@ -44,7 +44,7 @@ If vision tags are provided, weave them naturally into the copy (e.g. "sunlit ba
 // ============================================================
 
 export async function generateMarketingCopy(
-  propertyData: PropertyInsert,
+  propertyData: PropertyDraft,
   visionTags: string[]
 ): Promise<MarketingCopy> {
   if (isMockMode()) {

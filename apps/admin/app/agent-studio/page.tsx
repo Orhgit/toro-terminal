@@ -483,6 +483,9 @@ export default function AgentStudioPage() {
       STEP_ACTIONS[step]?.();
       stepRef.current++;
     }, 550);
+    // STEP_ACTIONS is defined inside the component but is stable across renders;
+    // including it in deps would re-create the interval each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { PropertyStatus, type PropertyInsert } from "@repo/database/schema";
+import { PropertyStatus, type PropertyDraft } from "@repo/database/schema";
 import { isMockMode } from "./mock.js";
 
 // ============================================================
@@ -52,7 +52,7 @@ export type PropertyExtraction = z.infer<typeof PropertyExtractionSchema>;
 
 export async function extractPropertyDetails(
   rawMessage: string
-): Promise<PropertyInsert> {
+): Promise<PropertyDraft> {
   if (isMockMode()) {
     return {
       owner_phone: "052-4567890",

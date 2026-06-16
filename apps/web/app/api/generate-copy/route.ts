@@ -1,0 +1,89 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+/**
+ * Generate marketing copy for a property listing (template-based, MVP).
+ *
+ * Validates input via zod (RIN-384) — bounded lengths and types prevent
+ * memory blow-ups and protect downstream interpolation/storage. The
+ * highlights string is split client-side and each item is escaped before
+ * inclusion in the output to neutralise any future XSS surface if the
+ * copy is ever rendered as HTML.
+ */
+
+const Body = z.object({
+  address: z.string().min(1).max(200),
+  rooms: z.number().int().min(1).max(50),
+  sqm: z.number().min(10).max(50000),
+  propertyType: z.string().min(1).max(50),
+  highlights: z.string().max(2000).default(""),
+});
+
+type GenerateRequest = z.infer<typeof Body>;
+
+const TYPE_ADJECTIVES: Record<string, string> = {
+  "דירה": "דירה מרווחת ומוארת",
+  "פנטהאוז": "פנטהאוז מפואר עם נוף פנורמי",
+  "וילה": "וילה מרשימה עם נוכחות אדריכלית",
+  "דירת גן": "דירת גן קסומה עם שטח פרטי",
+};
+
+function escapeText(s: string): string {
+  // Strip angle brackets so the copy is safe to interpolate into either
+  // plaintext or HTML output. zod has already bounded the string length.
+  return s.replace(/[<>]/g, "").trim();
+}
+
+function generateCopy(input: GenerateRequest): string {
+  const address = escapeText(input.address);
+  const propertyType = escapeText(input.propertyType);
+  const typeDesc = TYPE_ADJECTIVES[propertyType] || "נכס ייחודי";
+  const highlightsList = input.highlights
+    .split(",")
+    .map((h) => escapeText(h))
+    .filter(Boolean)
+    .slice(0, 20); // hard cap on bullet count
+
+  const highlightsText = highlightsList.length > 0
+    ? highlightsList.map((h) => `✅ ${h}`).join("\n")
+    : "✅ מיקום מבוקש\n✅ תכנון מוקפד\n✅ איכות ללא פשרות";
+
+  return `✨ חדש בשוק! הזדמנות נדירה ב${address}!
+
+מחפשים את בית החלומות שלכם? מצאנו אותו.
+
+${typeDesc} של ${input.rooms} חדרים, המשתרע על ${input.sqm} מ"ר של תכנון אדריכלי מוקפד. כל פינה בנכס הזה מספרת סיפור של איכות, עיצוב ותשומת לב לפרטים.
+
+🏠 מה מיוחד בנכס הזה?
+${highlightsText}
+
+💎 למה עכשיו?
+נכסים ברמה הזו ב${address} לא נשארים בשוק. הביקוש גבוה, והמלאי מוגבל. מי שמחפש ${propertyType} ב-${input.sqm} מ"ר עם ${input.rooms} חדרים — זו ההזדמנות.
+
+📊 נתוני השוק מדברים:
+${input.rooms} חדרים | ${input.sqm} מ"ר | ${propertyType} | ${address}
+
+📞 אל תפספסו — שלחו הודעה עוד היום לתיאום סיור פרטי!
+🔗 Powered by Toro AI`;
+}
+
+export async function POST(request: Request): Promise<Response> {
+  let raw: unknown;
+  try {
+    raw = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const parsed = Body.safeParse(raw);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "נא למלא את כל השדות הנדרשים", details: parsed.error.flatten() },
+      { status: 400 },
+    );
+  }
+
+  const copy = generateCopy(parsed.data);
+
+  return NextResponse.json({ copy });
+}

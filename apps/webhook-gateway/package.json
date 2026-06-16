@@ -7,18 +7,22 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "check-types": "tsc --noEmit",
+    "test": "vitest run",
     "test:extractor": "tsx scripts/test-extractor.ts"
   },
   "dependencies": {
+    "@fastify/helmet": "^13.0.1",
+    "@fastify/rate-limit": "^10.3.0",
     "@repo/ai-core": "workspace:*",
     "@repo/database": "workspace:*",
-    "fastify": "^5.3.3",
+    "fastify": "^5.8.5",
     "dotenv": "^16.5.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "tsx": "^4.19.4",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
   }
 }

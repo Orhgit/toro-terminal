@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import type { PropertyInsert } from "@repo/database/schema";
+import type { PropertyDraft } from "@repo/database/schema";
 import type { VisionAnalysis } from "./vision.js";
 import type { MarketingCopy } from "./copywriter.js";
 import { isMockMode } from "./mock.js";
@@ -126,7 +126,7 @@ let mockIndex = 0;
 // ============================================================
 
 export async function generateReelScript(
-  propertyData: PropertyInsert,
+  propertyData: PropertyDraft,
   vision: VisionAnalysis | null,
   copy: MarketingCopy
 ): Promise<ReelScript> {

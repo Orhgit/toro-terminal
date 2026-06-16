@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import type { PropertyInsert, Lead } from "@repo/database/schema";
+import type { PropertyDraft, Lead } from "@repo/database/schema";
 import type { VisionAnalysis } from "./vision.js";
 import type { MarketingCopy } from "./copywriter.js";
 import { isMockMode } from "./mock.js";
@@ -32,7 +32,7 @@ export type MatchResult = z.infer<typeof MatchResult>;
 // ============================================================
 
 export interface MatchInput {
-  property: PropertyInsert;
+  property: PropertyDraft;
   city: string;
   vision: VisionAnalysis | null;
   copy: MarketingCopy;
@@ -65,7 +65,7 @@ Return matches sorted by score (highest first).`;
 // Mock scoring heuristic
 // ============================================================
 
-function mockScore(property: PropertyInsert, city: string, lead: Lead): number {
+function mockScore(property: PropertyDraft, city: string, lead: Lead): number {
   let score = 50;
 
   // Budget fit
@@ -81,7 +81,7 @@ function mockScore(property: PropertyInsert, city: string, lead: Lead): number {
   // City match
   if (city === lead.city_preferred) score += 25;
 
-  // We don't have rooms in PropertyInsert, so skip room scoring in mock
+  // We don't have rooms in PropertyDraft, so skip room scoring in mock
 
   return Math.max(0, Math.min(100, score));
 }
